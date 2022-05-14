@@ -20,23 +20,23 @@ def init(cur: sqlite3.Cursor):
     cur.execute("CREATE TABLE secrets ( username TEXT, password TEXT, organization TEXT, UNIQUE (username, organization) );")
 
 @db()
-def add_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
+def post_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
     cur.execute(f"INSERT INTO secrets (username, password, organization) VALUES ('{username}', '{password}', '{organization}');")
 
 @db()
 def delete_password(cur: sqlite3.Cursor, username: str, organization: str = "default"):
-    cur.execute(f"DELETE FROM secrets WHERE username = '{username}' and organization = '{organization}';")
+    cur.execute(f"DELETE FROM secrets WHERE username = '{username}' AND organization = '{organization}';")
 
 @db()
-def update_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
-    cur.execute(f"UPDATE secrets SET password = '{password}' WHERE username = '{username}' and organization = '{organization}';")
+def put_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
+    cur.execute(f"UPDATE secrets SET password = '{password}' WHERE username = '{username}' AND organization = '{organization}';")
 
 @db()
 def get_password(cur: sqlite3.Cursor, username: str, organization: str = "default"):
-    cur.execute(f"SELECT password FROM secrets WHERE username = '{username}' and organization = '{organization}';")
+    cur.execute(f"SELECT password FROM secrets WHERE username = '{username}' AND organization = '{organization}';")
     password, *_ = cur.fetchone()
     return password
 
 
 if __name__ == "__main__":
-    pass
+    init()
