@@ -20,7 +20,7 @@ def init(cur: sqlite3.Cursor):
     cur.execute("CREATE TABLE secrets ( username TEXT, password TEXT, organization TEXT, UNIQUE (username, organization) );")
 
 @db()
-def post_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
+def add_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
     cur.execute(f"INSERT INTO secrets (username, password, organization) VALUES ('{username}', '{password}', '{organization}');")
 
 @db()
@@ -28,7 +28,7 @@ def delete_password(cur: sqlite3.Cursor, username: str, organization: str = "def
     cur.execute(f"DELETE FROM secrets WHERE username = '{username}' AND organization = '{organization}';")
 
 @db()
-def put_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
+def update_password(cur: sqlite3.Cursor, username: str, password: str, organization: str = "default"):
     cur.execute(f"UPDATE secrets SET password = '{password}' WHERE username = '{username}' AND organization = '{organization}';")
 
 @db()

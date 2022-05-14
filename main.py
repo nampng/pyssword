@@ -3,12 +3,18 @@ import db
 
 app = FastAPI()
 
+@app.get("/add/{organization}/{username}/{password}")
+async def add_password(organization: str, username: str, password: str):
+    return db.add_password(username=username, password=password, organization=organization)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/delete/{organization}/{username}")
+async def delete_password(organization: str, username: str):
+    return db.delete_password(username=username, organization=organization)
 
-@app.get("/post-password/{organization}/{username}/{password}")
-async def post_password(organization: str, username: str, password: str):
-    db.post_password(username=username, password=password, organization=organization)
+@app.get("/update/{organization}/{username}/{password}")
+async def update_password(organization: str, username: str, password: str):
+    return db.update_password(username=username, password=password, organization=organization)
 
+@app.get("/get/{organization}/{username}")
+async def get_password(organization: str, username: str):
+    return db.get_password(username=username, organization=organization)
