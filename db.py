@@ -37,6 +37,12 @@ def get_password(cur: sqlite3.Cursor, username: str, organization: str = "defaul
     password, *_ = cur.fetchone()
     return password
 
+@db()
+def get_organization_usernames(cur: sqlite3.Cursor, organization: str = "default"):
+    cur.execute(f"SELECT username FROM secrets WHERE organization = '{organization}';")
+    usernames = cur.fetchall()
+    return usernames
+
 
 if __name__ == "__main__":
     init()

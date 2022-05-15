@@ -18,3 +18,7 @@ async def update_password(organization: str, username: str, password: str):
 @app.get("/get/{organization}/{username}")
 async def get_password(organization: str, username: str):
     return db.get_password(username=username, organization=organization)
+
+@app.get("/get/{organization}")
+async def get_organization_usernames(organization: str):
+    return db.get_organization_usernames(organization=organization)
