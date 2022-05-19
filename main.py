@@ -1,4 +1,3 @@
-from typing import Union
 from fastapi import FastAPI
 import db
 from pydantic import BaseModel
@@ -7,8 +6,8 @@ from sqlite3 import IntegrityError
 
 class Secret(BaseModel):
     organization: str = "default"
-    username: Union[str, None]
-    password: Union[str, None]
+    username: str
+    password: str
 
     def __iter__(self):
         return iter((self.organization, self.username, self.password))
@@ -26,11 +25,6 @@ async def add_password(secret: Secret):
     organization, username, password = secret
 
     master_key = "test"
-
-    if password is None:
-        return Message(message="Password required")
-    if username is None:
-        return Message(message="Password required")
 
     try:
         db.add_password(
