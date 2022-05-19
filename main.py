@@ -3,6 +3,7 @@ from fastapi import FastAPI
 import db
 from pydantic import BaseModel
 from sqlite3 import IntegrityError
+import config
 
 
 class Secret(BaseModel):
@@ -21,11 +22,36 @@ class Message(BaseModel):
 
 app = FastAPI()
 
+db.init()
+
 master_key = None
 
 
 @app.post("/key/", response_model=Message)
 async def set_master_key(key: str):
+
+    try:
+        db.set_master_key(master_key=key)
+    except config.MasterKeyAlreadyExists:
+        return Message(message="A master key already exists, try logging in.")
+
+    global master_key
+    master_key = key
+
+    return Message(message="Master key set.")
+
+
+@app.get("/login/", response_model=Message)
+async def check_master_key(key: str):
+
+    try:
+        is_logged_in = db.check_master_key(master_key=key)
+    except TypeError:
+        return Message(message="No master key, try making one.")
+
+    if not is_logged_in:
+        return Message(message="Wrong master key.")
+
     global master_key
     master_key = key
 

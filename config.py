@@ -1,0 +1,2 @@
+class MasterKeyAlreadyExists(Exception):
+    pass

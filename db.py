@@ -1,5 +1,6 @@
 import sqlite3
 import encrypt
+import config
 
 
 def db(db_name: str = "default.db"):
@@ -23,8 +24,56 @@ def init(cur: sqlite3.Cursor):
     Creates 'secrets' table
     """
     cur.execute(
-        "CREATE TABLE secrets ( organization TEXT, username TEXT, password BLOB, salt BLOB, UNIQUE (username, organization) );"
+        "CREATE TABLE IF NOT EXISTS secrets ( organization TEXT, username TEXT, password BLOB, salt BLOB, UNIQUE (username, organization) );"
     )
+
+    cur.execute("CREATE TABLE IF NOT EXISTS master ( password BLOB, salt BLOB );")
+
+
+@db()
+def set_master_key(cur: sqlite3.Cursor, master_key: str):
+
+    cur.execute("SELECT * from master")
+
+    if cur.fetchall():
+        raise config.MasterKeyAlreadyExists
+
+    key, salt = encrypt.generate_key(master_key=master_key)
+    token = encrypt.encrypt(password=master_key, key=key)
+
+    query = "INSERT INTO master (password, salt) VALUES (?, ?)"
+    data = (token, salt)
+
+    cur.execute(query, data)
+
+
+@db()
+def check_master_key(cur: sqlite3.Cursor, master_key: str):
+
+    if master_key is None:
+        return False
+
+    cur.execute(f"SELECT salt FROM master;")
+
+    try:
+        salt, *_ = cur.fetchone()
+    except TypeError:
+        raise
+
+    cur.execute(f"SELECT password FROM master;")
+
+    try:
+        token, *_ = cur.fetchone()
+    except TypeError:
+        raise
+
+    key, _ = encrypt.generate_key(master_key=master_key, salt=salt)
+    password = encrypt.decrypt(token=token, key=key)
+
+    if password != master_key:
+        return False
+
+    return True
 
 
 @db()
