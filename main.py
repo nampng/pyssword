@@ -1,14 +1,16 @@
 from typing import Union
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import db
 from pydantic import BaseModel
 from sqlite3 import IntegrityError
 import config
+import json
 
 
 class Secret(BaseModel):
     organization: str = "default"
-    username: str
+    username: str = "default"
     password: str
 
     def __iter__(self):
@@ -22,13 +24,29 @@ class Message(BaseModel):
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+    "localhost:3000"
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 db.init()
 
 master_key = None
 
 
 @app.post("/key/", response_model=Message)
-async def set_master_key(key: str):
+async def set_master_key(secret: Secret):
+
+    _, _, key = secret
 
     try:
         db.set_master_key(master_key=key)
@@ -41,21 +59,23 @@ async def set_master_key(key: str):
     return Message(message="Master key set.")
 
 
-@app.get("/login/", response_model=Message)
-async def check_master_key(key: str):
+@app.post("/login/", response_model=Message)
+async def check_master_key(secret: Secret):
+
+    _, _, key = secret
 
     try:
         is_logged_in = db.check_master_key(master_key=key)
     except TypeError:
-        return Message(message="No master key, try making one.")
+        return Message(message="No master key, try making one.", data='2')
 
     if not is_logged_in:
-        return Message(message="Wrong master key.")
+        return Message(message="Wrong master key.", data='0')
 
     global master_key
     master_key = key
 
-    return Message(message="Master key set.")
+    return Message(message="Logged in.", data='1')
 
 
 @app.post("/add/", response_model=Message)
@@ -78,8 +98,11 @@ async def add_password(secret: Secret):
     return Message(message=f"Password added to {organization} for username {username}")
 
 
-@app.delete("/delete/", response_model=Message)
-async def delete_password(username: str, organization: str = "default"):
+@app.post("/delete/", response_model=Message)
+async def delete_password(secret: Secret):
+
+    organization, username, _ = secret
+
     if master_key is None:
         return Message(message="Please supply a master key")
 
@@ -88,7 +111,7 @@ async def delete_password(username: str, organization: str = "default"):
     return Message(message=f"Username deleted from {organization}")
 
 
-@app.put("/update/", response_model=Message)
+@app.post("/update/", response_model=Message)
 async def update_password(secret: Secret):
     organization, username, password = secret
 
@@ -100,8 +123,10 @@ async def update_password(secret: Secret):
     return Message(message=f"Password updated for {username} in {organization}")
 
 
-@app.get("/get/", response_model=Message)
-async def get_password(username: str, organization: str = "default"):
+@app.post("/get/", response_model=Message)
+async def get_password(secret: Secret):
+    organization, username, _ = secret
+
     if master_key is None:
         return Message(message="Please supply a master key")
 
@@ -112,3 +137,14 @@ async def get_password(username: str, organization: str = "default"):
     )
 
     return Message(message="Password retrieved", data=password)
+
+
+@app.post("/get/all", response_model=Message)
+async def get_usernames_and_organizations():
+
+    if master_key is None:
+        return Message(message="Please supply a master key")
+
+    org_dict = db.get_usernames_and_orgs()
+
+    return Message(message="Password retrieved", data=json.dumps(org_dict))

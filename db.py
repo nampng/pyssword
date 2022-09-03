@@ -1,3 +1,4 @@
+from collections import defaultdict
 import sqlite3
 import encrypt
 import config
@@ -134,7 +135,7 @@ def get_password(
     try:
         salt, *_ = cur.fetchone()
     except TypeError:
-        return None
+        return None # should raise instead of none
 
     cur.execute(
         f"SELECT password FROM secrets WHERE username = '{username}' AND organization = '{organization}';"
@@ -143,13 +144,28 @@ def get_password(
     try:
         token, *_ = cur.fetchone()
     except TypeError:
-        return None
+        return None # should raise instead of none
 
     key, _ = encrypt.generate_key(master_key=master_key, salt=salt)
     password = encrypt.decrypt(token=token, key=key)
 
     return password
 
+@db()
+def get_usernames_and_orgs(cur: sqlite3.Cursor,):
+    cur.execute(
+        f"SELECT organization, username FROM secrets;"
+    )
+
+    result = defaultdict(list)
+
+    for row in cur:
+        org, user = row
+        result[org].append(user)
+
+    return result
+
 
 if __name__ == "__main__":
-    init()
+    # init()
+    get_usernames_and_orgs()
