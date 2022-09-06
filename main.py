@@ -131,7 +131,6 @@ async def get_password(secret: Secret):
         return Message(message="Please supply a master key")
 
     password = db.get_password(
-        master_key=master_key,
         username=username,
         organization=organization,
     )
@@ -147,4 +146,4 @@ async def get_usernames_and_organizations():
 
     org_dict = db.get_usernames_and_orgs()
 
-    return Message(message="Password retrieved", data=json.dumps(org_dict))
+    return Message(message="Organizations and usernames retrieved", data=json.dumps(org_dict))

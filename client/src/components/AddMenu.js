@@ -20,36 +20,44 @@ export default function AddMenu(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = { "organization": org, "username": username, "password": password }
+        const payload = { "organization": org, "username": username, "password": password }
         fetch("/add", {
             method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(payload)
         })
-            .then(response => props.handleReload())
+            .then(response => response.json())
+            .then(() => {
+                let orgData = { ...props.data[org] } || {};
+                console.log(`Before change is: ${JSON.stringify(orgData)}`)
+                orgData[username] = null;
+
+                let newData = { ...props.data };
+                newData[org] = orgData;
+                props.setData(newData);
+            })
             .then(console.log(`Called /add/ for ${org}, ${username}`))
             .then(clearForm())
     }
 
     return (
         <div className='container'>
-            <h3>Add Credential</h3>
             <Button variant="primary" onClick={handleShow}>
                 Add Credential
             </Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Credential</Modal.Title>
+                    <Modal.Title>Add</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form id="addForm" onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
                             <Form.Label>Organization</Form.Label>
-                            <Form.Control required type="text" placeholder="Organization name" value={org} onChange={(e) => setOrg(e.target.value)} />
+                            <Form.Control required type="text" placeholder="Organization" value={org} onChange={(e) => setOrg(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Username</Form.Label>

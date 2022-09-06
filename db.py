@@ -128,6 +128,9 @@ def get_password(
     username: str,
     organization: str = "default",
 ):
+    """
+    Decrypt a token from DB by using the given master key.
+    """
     cur.execute(
         f"SELECT salt FROM secrets WHERE username = '{username}' AND organization = '{organization}';"
     )
@@ -157,15 +160,19 @@ def get_usernames_and_orgs(cur: sqlite3.Cursor,):
         f"SELECT organization, username FROM secrets;"
     )
 
-    result = defaultdict(list)
+    result = {}
 
     for row in cur:
         org, user = row
-        result[org].append(user)
+        if org in result:
+            result[org][user] = None
+        else:
+            result[org] = {user: None}
 
     return result
 
 
 if __name__ == "__main__":
     # init()
-    get_usernames_and_orgs()
+    res = get_password(username="test")
+    print(res)
