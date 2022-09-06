@@ -2,19 +2,6 @@
 
 BitWarden is a cool password management app so I wanted to see if I could try making it myself.
 
-Pardon me if the terminology here is wrong or mixed up. Let me know if that is the case.
+So currently, encryption and decryption happens on the backend, and the frontend's only purpose is to just allow to user to call the API easily and have a nice UI to see and interact with their passwords.
 
-Have done:
-1. Create an API to create, delete, update, and get passwords.
-2. Encrypt and decrypt passwords based on a master key.
-    - I'm not sure if BitWarden does it this way, but it makes sense:
-        - encryption: 
-        1. kdf made with a random salt -> encryption key derived from kdf(master_key)
-        2. encryption key used to encrypt password
-        3. store encrypted password and salt
-        - decryption:
-        4. To reverse the encryption you will need the EXACT same encryption key
-        5. grab salt from DB to get the kdf
-        6. get the same encryption key by doing kdf(master_key)
-        7. decrypt by doing key.decrypt(encrypted_password)
-3. Made a frontend with React that calls the API
+However, a glaring problem is present, which will be fixed up sooner or later. The problem is that the passwords are sent over to the frontend unencrypted. Ideally, I want to encrypt the passwords on the backend and then retrieve the token when calling the API. I can then decrypt the token on the frontend.
