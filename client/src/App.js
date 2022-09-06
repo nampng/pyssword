@@ -8,10 +8,12 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
+  const [masterKey, setMasterKey] = React.useState('');
+
   if (!isLoggedIn) {
     return (
       <div className='d-flex flex-column justify-content-center align-items-center vh-100'>
-        {<Login setIsLoggedIn={setIsLoggedIn} />}
+        {<Login setMasterKey={setMasterKey} setIsLoggedIn={setIsLoggedIn} />}
       </div>
     );
   }
@@ -21,7 +23,7 @@ function App() {
       <div className='d-flex flex-column bg-dark p-3'>
         <h1 className='text-white mx-5'>Pyssword</h1>
       </div>
-      <Manager />
+      <Manager masterKey={masterKey} />
     </div>
   );
 }

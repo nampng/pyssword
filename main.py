@@ -11,7 +11,7 @@ import json
 class Secret(BaseModel):
     organization: str = "default"
     username: str = "default"
-    password: str
+    password: Union[str, None]
 
     def __iter__(self):
         return iter((self.organization, self.username, self.password))
@@ -130,12 +130,16 @@ async def get_password(secret: Secret):
     if master_key is None:
         return Message(message="Please supply a master key")
 
-    password = db.get_password(
+    salt, token = db.get_password(
         username=username,
         organization=organization,
     )
 
-    return Message(message="Password retrieved", data=password)
+    # print(salt, token)
+
+    # return Message(message="test", data=json.dumps(["test"]))
+
+    return Message(message="Password retrieved", data=json.dumps([salt, token]))
 
 
 @app.post("/get/all", response_model=Message)

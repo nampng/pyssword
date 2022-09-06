@@ -3,6 +3,8 @@ import Button from "react-bootstrap/esm/Button";
 
 import AddMenu from "./AddMenu";
 
+import { decryptToken } from "../decrypt";
+
 function Credential(props) {
     const [password, setPassword] = React.useState('')
     const [showPassword, setShowPassword] = React.useState(false)
@@ -18,9 +20,17 @@ function Credential(props) {
             body: JSON.stringify(data)
         })
             .then(response => response.json())
-            .then(resp => setPassword(resp.data))
+            .then(resp => {
+                let salt, token;
+                let masterKey = props.masterKey;
+                [salt, token] = resp.data;
+
+                let res = decryptToken(masterKey, salt, token)
+
+                setPassword(res)
+            })
             .then(console.log(`Called /get/ for ${props.orgName}, ${props.username}`))
-    }, [])
+    }, [props.masterKey, props.orgName, props.username])
 
     const handleCopy = () => {
         navigator.clipboard.writeText(password);
@@ -71,7 +81,7 @@ function Organization(props) {
 
     for (let username in props.usernames) {
         console.log(`Adding username ${username}`)
-        rows.push(<Credential key={username} username={username} orgName={props.orgName} setData={props.setData} data={props.data} />)
+        rows.push(<Credential key={username} username={username} orgName={props.orgName} setData={props.setData} data={props.data} masterKey={props.masterKey} />)
     }
 
     return (
@@ -113,7 +123,7 @@ export default function Manager(props) {
         }
 
         // console.log(`Adding org ${org} with contains ${JSON.stringify(data[org])}`);
-        rows.push(<Organization key={org} orgName={org} usernames={data[org]} setData={setData} data={data} />)
+        rows.push(<Organization key={org} orgName={org} usernames={data[org]} setData={setData} data={data} masterKey={props.masterKey} />)
     }
 
     return (

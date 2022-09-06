@@ -1,7 +1,7 @@
-from collections import defaultdict
 import sqlite3
 import encrypt
 import config
+import base64
 
 
 def db(db_name: str = "default.db"):
@@ -120,9 +120,33 @@ def update_password(
         f"UPDATE secrets SET password = '{token}', salt = '{salt}' WHERE username = '{username}' AND organization = '{organization}';"
     )
 
-
 @db()
 def get_password(
+    cur: sqlite3.Cursor,
+    username: str,
+    organization: str = "default",
+):
+    """
+    Gets the salt and token associated with the username and organization provided.
+    This will be decrypted on the client side.
+    """
+    cur.execute(
+        f"SELECT salt, password FROM secrets WHERE username = '{username}' AND organization = '{organization}';"
+    )
+
+    try:
+        salt, token = cur.fetchone()
+    except TypeError:
+        raise TypeError
+
+    # Encode salt and token into base64 (if not already) and then decode to utf-8
+    salt = base64.b64encode(salt).decode('utf-8')
+    token = token.decode('utf-8')
+
+    return (salt, token)
+
+@db()
+def get_password_unsafe(
     cur: sqlite3.Cursor,
     master_key: str,
     username: str,
@@ -171,8 +195,7 @@ def get_usernames_and_orgs(cur: sqlite3.Cursor,):
 
     return result
 
-
 if __name__ == "__main__":
     # init()
-    res = get_password(username="test")
+    res = get_password(username="test", organization="default")
     print(res)

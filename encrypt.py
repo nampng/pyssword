@@ -37,3 +37,7 @@ def decrypt(token: bytes, key: bytes):
         return None
 
     return password
+
+
+if __name__ == "__main__":
+    pass

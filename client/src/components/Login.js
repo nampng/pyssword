@@ -24,6 +24,7 @@ export default function Login(props) {
                 setMsg(resp.message)
                 if (resp.data === '1') {
                     props.setIsLoggedIn(true)
+                    props.setMasterKey(key)
                 }
             })
             .then(console.log("Called /login/"))
