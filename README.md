@@ -2,7 +2,7 @@
 
 BitWarden is a cool password management app so I wanted to see if I could try making it myself.
 
-Current happenings:
+## Current happenings
 
 So currently, encryption and decryption happens on the backend, and the frontend's only purpose is to just allow to user to call the API easily and have a nice UI to see and interact with their passwords.
 
