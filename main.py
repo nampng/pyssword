@@ -131,6 +131,7 @@ async def get_password(secret: Secret):
         return Message(message="Please supply a master key")
 
     password = db.get_password(
+        master_key=master_key,
         username=username,
         organization=organization,
     )
