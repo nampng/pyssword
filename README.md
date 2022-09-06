@@ -17,6 +17,4 @@ Have done:
         5. grab salt from DB to get the kdf
         6. get the same encryption key by doing kdf(master_key)
         7. decrypt by doing key.decrypt(encrypted_password)
-
-Todo:
-1. Make a fancy UI for the API
+3. Made a frontend with React that calls the API
