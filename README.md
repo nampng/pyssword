@@ -44,7 +44,7 @@ The encryption is symmetric, so a secret key will be used to encrypt and decrypt
 
 In this case, our secret key is our master key, which is how I suspect BitWarden does it, but I'm not sure.
 
-Currently, encryption and decryption is done entirely in the backend and the passwords are sent to the frontend in **PLAIN TEXT**. Yeah, not good. However, I'm attempting to make changes [in this branch](/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side, which would be a step in the right direction. I'm not too proficient in JavaScript, React, Node.js, etc. so that will be a separate learning experience for me.
+Currently, encryption and decryption is done entirely in the backend and the passwords are sent to the frontend in **PLAIN TEXT**. Yeah, not good. However, I'm attempting to make changes [in this branch](https://github.com/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side, which would be a step in the right direction. I'm not too proficient in JavaScript, React, Node.js, etc. so that will be a separate learning experience for me.
 
 ### Frontend
 
@@ -58,7 +58,7 @@ I read through the React docs and implemented what I learned with some okayish J
 
 ## Plans For The Future
 
-Again, check out [this branch](/nampng/pyssword/tree/server-encrypt-client-decrypt) if you want to check out my further work on this project.
+Again, check out [this branch](https://github.com/nampng/pyssword/tree/server-encrypt-client-decrypt) if you want to check out my further work on this project.
 I mostly want to make the interactions between the frontend and backend to be safe but also want the React frontend to be more responsive and nice looking as well.
 
 If things go well, I might just use this project as my personal password manager.
