@@ -33,19 +33,28 @@ The contents of every post request used in this app should look like this:
 }
 ```
 
-After doing so, you'll also be logged in and ready to use the app. If you already have an existing database and master key set, send a post request to `/login/` to set the global master key variable in the application.
+After doing so, you'll also be logged in and ready to use the app. If you already have an existing database and master key made, send a post request to `/login/` to set the global master key variable in the application and you're good to go.
 
 You can then call `/get/`, `/add/`, `/delete/`, or `/get/all/` to get passwords, add passwords, delete passwords, or get the entire collection of organizations and usernames within the database.
 
 #### Encryption
-Encryption is done by using the Fernet encryption algorithm, which can be easily used in the [cryptography](https://cryptography.io/en/latest/fernet/) library.
-The encryption done is symmetric, so a secret key will be used to encrypt and decrpyt our passwords.
+Encryption is done by using the [cryptography](https://cryptography.io/en/latest/fernet/) library, which uses the Fernet encryption algorithm.
+
+The encryption is symmetric, so a secret key will be used to encrypt and decrpyt our passwords.
 
 In this case, our secret key is our master key, which is how I suspect BitWarden does it, but I'm not sure.
 
-Currently, encryption and decryption is done entirely in the backend and the password is sent to the frontend in PLAIN TEXT. Yeah, no good. However, I'm attempting to make changes [in this branch](/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side.
+Currently, encryption and decryption is done entirely in the backend and the password is sent to the frontend in **PLAIN TEXT**. Yeah, no good. However, I'm attempting to make changes [in this branch](/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side, which would be a step in the right direction. I'm not too proficient in JavaScript, React, Node.js, etc. so that will be a separate learning experience for me.
 
 ### Frontend
+
+#### React
+
+Run the React app by doing `npm start` in the `/client` directory.
+
+Honestly, I don't really have much to say about this part of the code. 
+
+I read through the React docs and implemented what I learned with some okayish JavaScript code. There are inefficiencies that are clear and that I will tackle later on, but for now *it works*™.
 
 ## Plans For The Future
 
