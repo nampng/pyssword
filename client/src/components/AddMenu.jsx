@@ -18,8 +18,24 @@ export default function AddMenu(props) {
         setPassword('');
     }
 
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value)
+    }
+
+    const handleUsernameChange = (e) => {
+
+        if (e.target.value.length > 5) {
+            console.log("Too long!")
+        }
+
+        setUsername(e.target.value)
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        // Validate Stuff Here
+
         const payload = { "organization": org, "username": username, "password": password }
         fetch("/add", {
             method: 'POST',
@@ -61,11 +77,11 @@ export default function AddMenu(props) {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Username</Form.Label>
-                            <Form.Control required type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                            <Form.Control required type="text" placeholder="Username" value={username} onChange={handleUsernameChange} />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control required type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <Form.Control required type="password" placeholder="Password" value={password} onChange={handlePasswordChange} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>

@@ -59,7 +59,7 @@ export default function Login(props) {
                 </div>
             </form>
             <div className='my-3'>
-                {msg === '' ? null : <p className='text-danger'>{msg}</p>}
+                {msg && <p className='text-danger'>{msg}</p>}
             </div>
         </div>
     );

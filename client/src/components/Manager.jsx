@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 
 import AddMenu from "./AddMenu";
 
 function Credential(props) {
-    const [password, setPassword] = React.useState('')
-    const [showPassword, setShowPassword] = React.useState(false)
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
 
-    React.useEffect(() => {
+    useEffect(() => {
         const data = { "organization": props.orgName, "username": props.username, "password": "" };
         fetch('/get/', {
             method: 'POST',
@@ -82,16 +82,12 @@ function Organization(props) {
     );
 }
 
-// Why do an API call every time? Just API call what's changed in the dict.
-// So let's do this. Call /get/all in the beginning which will get us all of the orgs and users we need -> convert to dict
-// We can alter the dict when doing a /add/ or /delete/ call.
-// We can then render each of these orgs and users w/o calling /get/.
-// If we need the passwords to be shown / copied, THEN call the /get/ API since we need it at that time only
-
 export default function Manager(props) {
-    const [data, setData] = React.useState({});
+    const [data, setData] = useState({});
 
-    React.useEffect(() => {
+    console.log("Rendered");
+
+    useEffect(() => {
         fetch('/get/all', {
             method: 'POST',
             mode: 'cors',
@@ -100,12 +96,14 @@ export default function Manager(props) {
             },
         })
             .then(response => response.json())
-            .then(resp => setData(JSON.parse(resp.data)))
+            .then(resp => {
+                setData(JSON.parse(resp.data))
+            })
             .then(console.log("Called /get/all/"))
-
     }, [])
 
-    let rows = [];
+
+    let rows = []
 
     for (let org in data) {
         if (Object.keys(data[org]).length === 0) {
