@@ -44,7 +44,7 @@ The encryption is symmetric, so a secret key will be used to encrypt and decrypt
 
 In this case, our secret key is our master key, which is how I suspect BitWarden does it, but I'm not sure.
 
-Currently, encryption and decryption is done entirely in the backend and the passwords are sent to the frontend in **PLAIN TEXT**. Yeah, not good. However, I'm attempting to make changes [in this branch](https://github.com/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side, which would be a step in the right direction. I'm not too proficient in JavaScript, React, Node.js, etc. so that will be a separate learning experience for me.
+Currently, encryption and decryption is done entirely in the backend and the passwords are sent to the frontend in PLAIN TEXT. ~Yeah, not good. However, I'm attempting to make changes [in this branch](https://github.com/nampng/pyssword/tree/server-encrypt-client-decrypt) so that encryption is done on the server side and decryption is done on the client side, which would be a step in the right direction. I'm not too proficient in JavaScript, React, Node.js, etc. so that will be a separate learning experience for me.~ <- Apparently this is okay according to [this stack overflow post](https://stackoverflow.com/questions/962187/plain-text-password-over-https). If this application is ever deployed, then the only thing that needs to be done next is having an SSL certificate in order to do HTTPS.
 
 ### Frontend
 
